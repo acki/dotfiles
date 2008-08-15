@@ -1,0 +1,1 @@
+echo -n `pwd`/$1 | pbcopy
