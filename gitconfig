@@ -1,0 +1,9 @@
+[user]
+	name = jonas.baumann
+	email = j.baumann@jone.ch
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[core]
+	excludesfile = /Users/jone/git/conf/gitignore
