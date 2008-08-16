@@ -15,3 +15,20 @@ zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %
 zstyle :compinstall filename '/Users/senny/.zshrc'
 
 # End of lines added by compinstall
+
+# Group matches and Describe
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:descriptions' format $'\e[01;33m -- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[01;35m -- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[01;31m -- No Matches Found --\e[0m'
+
+# Remove uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+    adm alias apache at bin cron cyrus daemon ftp games gdm guest \
+    haldaemon halt mail man messagebus mysql named news nobody nut \
+    lp operator portage postfix postgres postmaster qmaild qmaill \
+    qmailp qmailq qmailr qmails shutdown smmsp squid sshd sync \
+    uucp vpopmail xfs \
+    `cat /etc/passwd | grep ^_ | cut -d ':' -f 1`
