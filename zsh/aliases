@@ -1,7 +1,8 @@
+#!/bin/zsh
+
 alias ls='ls -Gh'
 alias ll='ls -l'
 alias la='ls -lA'
-alias ..='cd ..'
 alias grep='grep --color'
 alias Preview='/Applications/Preview.app/Contents/MacOS/Preview'
 alias gvimp='gvim -p'
@@ -17,3 +18,50 @@ alias git-co='git-checkout'
 alias git-ci='git-commit'
 alias git-mergetool='git-mergetool --tooly=gvimdiff'
 alias git-sd='gvim -p `git-diff --name-only`'
+
+rationalise-dot() {
+if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+=/..
+else
+    LBUFFER+=.
+fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+
+
+# Mac Application aliases
+alias firefox='open -a firefox'
+alias preview='open -a Preview'
+alias camino='open -a Camino'
+alias mail='open -a Mail'
+alias skype='open -a Skype'
+alias adium='open -a Adium'
+alias ical='open -a ICal'
+alias finder='open -a Finder'
+alias notes='open -a Stickies'
+alias tasks='open -a TaskCoach'
+
+#Extensions
+alias -s pdf=preview
+alias -s odt=preview
+alias -s doc=preview
+alias -s docx=preview
+alias -s rtf=preview
+alias -s ods=preview
+alias -s xls=preview
+alias -s xlsx=preview
+alias -s odp=preview
+alias -s ppt=preview
+alias -s pptx=preview
+
+alias -s htm=firefox
+alias -s html=firefox
+alias -s xml=firefox
+
+alias -s png=preview
+alias -s jpg=preview
+alias -s gif=preview
+
+alias -s php=php
+alias -s py=python
