@@ -9,9 +9,7 @@ output = []
 path = svnpath.split('/')
 if 'trunk' in path:
     output.append('[')
-    output.append(yellow_bold(path[path.index('trunk')-1]))
-    output.append('/')
-    output.append(green('trunk'))
+    output.append(green(path[path.index('trunk')-1]))
     output.append(']')
 elif 'branches' in path:
     output.append('[')
