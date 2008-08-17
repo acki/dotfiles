@@ -41,6 +41,8 @@ alias ical='open -a ICal'
 alias finder='open -a Finder'
 alias notes='open -a Stickies'
 alias tasks='open -a TaskCoach'
+# http://github.com/Caged/gitnub/tree/master
+alias nub='open -a gitnub'
 
 #Extensions
 alias -s pdf=preview
