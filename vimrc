@@ -66,6 +66,7 @@ autocmd BufEnter * lcd %:p:h
 "" python
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
 autocmd FileType php map <F5> :w<CR>:!php "%"<CR>
+autocmd FileType tex map <F5> :w<CR>:!/usr/texbin/pdflatex "%";open *.pdf<CR>
 "autocmd FileType php set tabstop=2
 "autocmd FileType php set shiftwidth=2
 "autocmd FileType php set softtabstop=2

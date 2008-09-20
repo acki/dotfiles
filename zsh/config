@@ -1,6 +1,7 @@
 # 
 
-PS1='%3~$(git_branch_for_prompt)$(svn_branch_for_prompt)%# '
+PS1='%3~$(git_branch_for_prompt)%# '
+#PS1='%3~$(git_branch_for_prompt)$%# '
 EDITOR='vi'
 PATH="/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/git/bin:$PATH"
 PATH="$HOME/bin:$HOME/.bin:$PATH"
@@ -43,3 +44,5 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # named directories
 namedir izug /Users/jone/plone/03_izug_buildout
 namedir skriptorium /Users/jone/plone/02_skriptorium_z2.10.5_p3.0.4
+namedir www /opt/local/apache2/htdocs
+namedir reposit /Users/jone/projects/reposit/svn-trunk/reposit

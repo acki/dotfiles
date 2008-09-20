@@ -5,11 +5,17 @@ alias ll='ls -l'
 alias la='ls -lA'
 alias grep='grep --color'
 alias Preview='/Applications/Preview.app/Contents/MacOS/Preview'
+
+# VIM
 alias gvimp='gvim -p'
+alias mvim='mvim --remote-tab-silent'
 
 alias apache2ctl='sudo /opt/local/apache2/bin/apachectl'
 alias mysqlstart='sudo mysqld_safe5 &'
 alias mysqlstop='mysqladmin5 -u root -p shutdown'
+
+# hamachi
+alias hamachi='sudo hamachi'
 
 # GIT
 alias git-b='git-branch -a'
@@ -29,6 +35,9 @@ fi
 zle -N rationalise-dot
 bindkey . rationalise-dot
 
+alias ..='cd ..'
+alias ...='cd ../..'
+
 
 # Mac Application aliases
 alias firefox='open -a firefox'
@@ -43,6 +52,9 @@ alias notes='open -a Stickies'
 alias tasks='open -a TaskCoach'
 # http://github.com/Caged/gitnub/tree/master
 alias nub='open -a gitnub'
+
+# django stuff
+alias manager='__doc/bin/manager.py'
 
 #Extensions
 alias -s pdf=preview
