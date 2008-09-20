@@ -56,7 +56,7 @@ alias tasks='open -a TaskCoach'
 alias nub='open -a gitnub'
 
 # django stuff
-alias manager='__doc/bin/manager.py'
+alias manager='bin/manager/manager.py'
 
 #Extensions
 alias -s pdf=preview
