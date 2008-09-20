@@ -7,6 +7,7 @@ import re
 from threading import Thread
 
 EXTENDED_STATUS_COMMAND = 'svn st | grep -v ^X | grep -v ^Performing | grep -v ^$ | grep -v PKG-INFO$ | grep -v SOURCES.txt$ | grep -v .egg-info$'
+VIM_COMMAND = 'mvim'
 
 class Main:
 
@@ -54,7 +55,7 @@ class Main:
         self.con.register_command(
             cmd = ['diff', 'd'],
             method = self.cmd_diff,
-            desc = 'shows the difference between a working-copy file and its base-revision with \'gvim\'',
+            desc = 'shows the difference between a working-copy file and its base-revision with Vim',
         )
         self.con.register_command(
             cmd = ['info', 'i'],
@@ -188,7 +189,7 @@ class Main:
         selectedFiles = self.con.selectFiles(None, 'edit', confirm=False, ommit_local_locks=True)
         if selectedFiles:
             files = [file for foo, foo2, file in selectedFiles if os.path.isfile(file)]
-            self.svn.runcmd('gvim -p %s ' % ' '.join(files), background=True)
+            self.svn.runcmd('%s -p %s ' % (VIM_COMMAND, ' '.join(files)), background=True)
 
     def cmd_blame(self, **kwargs):
         files = [file for foo, foo2, file in self.con.selectFiles('ADMRCXIKSKOTB', 'blame', confirm=False) if os.path.isfile(file)]
@@ -282,7 +283,7 @@ class Svn:
         file.write(vimcmd)
         file.close()
         tempfiles.append('%s/.jsvn.vimcommands' % tempdir)
-        self.runcmd('gvim -s %s/.jsvn.vimcommands' % tempdir)
+        self.runcmd('%s -s %s/.jsvn.vimcommands' % (VIM_COMMAND, tempdir))
         for file in tempfiles:
             self.runcmd('rm %s' % file)
 
@@ -310,7 +311,7 @@ class Svn:
         vimfile.write(vimcommands)
         vimfile.close()
         tempfiles.append(tmpdir + '/.jsvn.vimcommands')
-        self.runcmd('gvim -s %s/.jsvn.vimcommands' % tmpdir)
+        self.runcmd('%s -s %s/.jsvn.vimcommands' % (VIM_COMMAND, tmpdir))
         for file in tempfiles:
             self.runcmd('rm %s' % file)
 
@@ -320,7 +321,7 @@ class Svn:
         for file in files:
             print 'blaming %s' % file
             self.runcmd('svn blame %s > %s/.jsvn.blame.%s' % (file, tmpdir, file))
-        self.runcmd('gvim %s/.jsvn.blame.*' % tmpdir)
+        self.runcmd('%s %s/.jsvn.blame.*' % (VIM_COMMAND, tmpdir))
 
 
     def info(self):
