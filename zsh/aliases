@@ -11,7 +11,7 @@ alias gvimp='gvim -p'
 alias mvim='mvim --remote-tab-silent'
 
 # Apache / mysql
-alias amstart='sudo /opt/local/apache2/bin/apachectl start; sudo mysqld/opt/local/bin/mysqld_safe5 start'
+alias amstart='sudo /opt/local/apache2/bin/apachectl start; sudo /opt/local/bin/mysqld_safe5 start'
 alias apache2ctl='sudo /opt/local/apache2/bin/apachectl'
 alias mysqlstart='sudo mysqld_safe5 &'
 alias mysqlstop='mysqladmin5 -u root -p shutdown'
