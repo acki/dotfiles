@@ -34,8 +34,9 @@ map <silent> <F2> :if &guioptions =~# 'T' <Bar>
                       \set guioptions+=m <Bar>
                     \endif<CR>
 " disable GUI options
-set guioptions-=T
-set guioptions-=M
+set guioptions-=T       " disable toolbar
+set guioptions-=M       " disable menu bar
+set guioptions+=c       " use console dialogs
 
 "" buf explorer
 map L :split<CR>:BufExplorer<CR>
