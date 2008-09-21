@@ -69,6 +69,14 @@ map <D-0> :next<CR>
 " toggle white-space
 map W :set list!<CR>
 
+" Indent/Dedent with Tab
+inoremap <S-Tab> <C-O><LT><LT>
+nnoremap <Tab> >>
+nnoremap <S-Tab> <LT><LT>
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <LT>gv
+
+
 "" highlighting
 autocmd BufRead *.kss set filetype=css
 autocmd BufRead *.css.dtml set filetype=css
