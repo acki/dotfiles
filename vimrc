@@ -42,6 +42,14 @@ set guioptions-=T       " disable toolbar
 set guioptions-=M       " disable menu bar
 set guioptions+=c       " use console dialogs
 
+" GUI settings
+if has("gui_running")
+  set columns=110 " Fenstergröße
+  set lines=55
+  set guifont=Monaco\ 9
+  colorscheme native
+endif
+
 "" buf explorer
 map L :split<CR>:BufExplorer<CR>
 map l :BufExplorer<CR>
