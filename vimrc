@@ -1,82 +1,32 @@
 colorscheme desert
 syntax on
-set cursorline      " highlight current line
+
+set cursorline                      " highlight current line
 highlight CursorLine guibg=#171717
-set number
+set number                          " show line numbers
+set encoding=utf-8                  " default encoding
+set fileformat=unix                 " default file format
+set scrolloff=1
+set backspace=indent,eol,start      " backspace should work as expected
+set vb                              " visual bell
+set ls=2                            " show filename in statusbar
+set ruler                           " show position in statusbar
+set showmatch                       " show closing brackets
+    " do not edit files of these types
+set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.swp
+autocmd BufEnter * lcd %:p:h        " always switch working directory to directory of current file
+    "" highlight long lines (>81)
+hi LineTooLong cterm=bold ctermbg=red guibg=darkGrey
+match LineTooLong /\%>80v.\+/
+
+
+" INDENTING SETTINGS
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
 set smarttab
 set expandtab
 set autoindent
-set encoding=utf-8
-set fileformat=unix
-set scrolloff=1
-"" Suchergebnisse hervorheben und schon beim Suchen anzeigen
-set hlsearch
-set incsearch
-"" Verhalten der Rückschritttaste
-set backspace=indent,eol,start
-set vb "" visual bell
-"" mac: ctrl + z auf undo mappen
-nmap <D-Z> u
-"" immer die Statuszeile mit dem Dateinamen anzeigen
-set ls=2
-"" zeigt unten links diverse Positionsinformationen der Schreibmarke
-set ruler
-"" zeigt beim Schließen von Klammern kurz an, wo sie geöffnet wurde
-set showmatch
-
-"" do not edit files of these types
-set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.swp
-
-" Map F2 to add/remove GUI options.
-map <silent> <F2> :if &guioptions =~# 'T' <Bar>
-                      \set guioptions-=T <Bar>
-                      \set guioptions-=m <Bar>
-                    \else <Bar>
-                      \set guioptions+=T <Bar>
-                      \set guioptions+=m <Bar>
-                    \endif<CR>
-" disable GUI options
-set guioptions-=T       " disable toolbar
-set guioptions-=M       " disable menu bar
-set guioptions+=c       " use console dialogs
-
-" GUI settings
-if has("gui_running")
-  set columns=170
-  set lines=51
-endif
-
-"" buf explorer
-map L :split<CR>:BufExplorer<CR>
-map l :BufExplorer<CR>
-
-"" tabs
-map ä :tabn<CR>
-map ü :tabp<CR>
-map ö :tabnew<CR>:BufExplorer<CR>
-map $ :q<CR>
-map - :e .<CR>
-map _ :tabnew<CR>:e ~/.vimrc<CR>
-"" \/ <fn>-
-map + :tabnew<CR>:e ~/.vim/vimnotes<CR>
-set showtabline=2
-map <D-1> :GITDiff<CR><C-W>40>
-map <D-2> :syntax off<CR>:syntax on<CR>
-""map <silent> <D--> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
-map <D-3> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
-map <D-6> :%s/ / /g<CR>
-map <D-7> :nohlsearch<CR>
-map <D-9> :prev<CR>
-map <D-0> :next<CR>
-
-
-"" misc
-" toggle white-space
-map W :set list!<CR>
-
 " Indent/Dedent with Tab
 inoremap <S-Tab> <C-O><LT><LT>
 nnoremap <Tab> >>
@@ -85,36 +35,80 @@ vnoremap <Tab> >gv
 vnoremap <S-Tab> <LT>gv
 
 
-"" highlighting
+" SEARCH SETTINGS
+set hlsearch
+set incsearch
+
+
+" GUI SETTINGS
+if has("gui_running")
+    set columns=170
+    set lines=51
+    set guioptions-=T               " disable toolbar
+    set guioptions-=M               " disable menu bar
+    set guioptions+=c               " use console dialogs
+endif
+" Map F2 to add/remove GUI options.
+map <silent> <F2> :if &guioptions =~# 'T' <Bar>
+                      \set guioptions-=T <Bar>
+                      \set guioptions-=m <Bar>
+                    \else <Bar>
+                      \set guioptions+=T <Bar>
+                      \set guioptions+=m <Bar>
+                    \endif<CR>
+
+
+" TABS
+map ä :tabn<CR>
+map ü :tabp<CR>
+map $ :q<CR>
+map - :e .<CR>
+map _ :tabnew<CR>:e ~/.vimrc<CR>
+map + :tabnew<CR>:e ~/.vim/vimnotes<CR>
+set showtabline=2                   " always show tab bar
+
+
+" VARIOUS MAPPINGS
+    " toggle syntax
+map <D-2> :syntax off<CR>:syntax on<CR>
+    " reload .vimrc
+map <D-3> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
+    " Mac: replace bad ctrl-space spaces with normal spaces
+map <D-6> :%s/ / /g<CR>
+    " stop highlighting
+map <D-7> :nohlsearch<CR>
+    " toggle white-space
+map W :set list!<CR>
+
+
+"" HIGHLIGHTING
 autocmd BufRead *.kss set filetype=css
 autocmd BufRead *.css.dtml set filetype=css
 autocmd BufRead *.zcml set filetype=xml
 autocmd BufRead *.props set filetype=cfg
 
-"" always switch working directory to directory of current file
-autocmd BufEnter * lcd %:p:h
 
-"" python
+"" FILETYPE (EXECUTE)
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
 autocmd FileType php map <F5> :w<CR>:!php "%"<CR>
 autocmd FileType tex map <F5> :w<CR>:!/usr/texbin/pdflatex "%";open *.pdf<CR>
-"autocmd FileType php set tabstop=2
-"autocmd FileType php set shiftwidth=2
-"autocmd FileType php set softtabstop=2
 
-"" folding
+
+" ---------------------------
+" PLUGIN: BUFEXPLORER.VIM
+map L :split<CR>:BufExplorer<CR>
+map l :BufExplorer<CR>
+map ö :tabnew<CR>:BufExplorer<CR>
+
+
+" ---------------------------
+" PLUGIN: PYTHON_EDITING.VIM 
 source ~/.vim/ftplugin/python_editing.vim
 map f :source ~/.vim/ftplugin/python_editing.vim<CR>
 
-"" highlight long lines (>81)
-hi LineTooLong cterm=bold ctermbg=red guibg=darkGrey
-match LineTooLong /\%>80v.\+/
-""autocmd BufWinEnter,Syntax * exe "match LineTooLong /\\%>".&textwidth."v.\\+/"
 
-"" highlightings
-hi nose guibg=darkBlue
-match nose /\cnose/
-
-
+" ---------------------------
+" PLUGIN: PYDOC.VIM
 " <F1> calls Pydoc
 noremap <F1> :call ShowPyDoc('<C-R><C-A>', 1)<CR> 
+
