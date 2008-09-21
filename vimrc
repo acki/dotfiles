@@ -1,5 +1,6 @@
 colorscheme desert
 syntax on
+set cursorline      " highlight current line
 set number
 set tabstop=4
 set shiftwidth=4
