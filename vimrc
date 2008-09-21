@@ -114,3 +114,7 @@ match LineTooLong /\%>80v.\+/
 "" highlightings
 hi nose guibg=darkBlue
 match nose /\cnose/
+
+
+" <F1> calls Pydoc
+noremap <F1> :call ShowPyDoc('<C-R><C-A>', 1)<CR> 
