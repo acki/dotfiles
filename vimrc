@@ -25,6 +25,17 @@ set ruler
 "" zeigt beim Schließen von Klammern kurz an, wo sie geöffnet wurde
 set showmatch
 
+" Map F2 to add/remove GUI options.
+map <silent> <F2> :if &guioptions =~# 'T' <Bar>
+                      \set guioptions-=T <Bar>
+                      \set guioptions-=m <Bar>
+                    \else <Bar>
+                      \set guioptions+=T <Bar>
+                      \set guioptions+=m <Bar>
+                    \endif<CR>
+" disable GUI options
+set guioptions-=T
+set guioptions-=M
 
 "" buf explorer
 map L :split<CR>:BufExplorer<CR>
