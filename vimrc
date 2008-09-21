@@ -1,6 +1,7 @@
 colorscheme desert
 syntax on
 set cursorline      " highlight current line
+highlight CursorLine guibg=#171717
 set number
 set tabstop=4
 set shiftwidth=4
