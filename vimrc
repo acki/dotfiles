@@ -25,6 +25,9 @@ set ruler
 "" zeigt beim Schließen von Klammern kurz an, wo sie geöffnet wurde
 set showmatch
 
+"" do not edit files of these types
+set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.swp
+
 " Map F2 to add/remove GUI options.
 map <silent> <F2> :if &guioptions =~# 'T' <Bar>
                       \set guioptions-=T <Bar>
