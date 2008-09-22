@@ -118,3 +118,8 @@ map f :source ~/.vim/ftplugin/python_editing.vim<CR>
 " <F1> calls Pydoc
 noremap <F1> :call ShowPyDoc('<C-R><C-A>', 1)<CR> 
 
+
+" ---------------------------
+" PLUGIN: ROJECT.VIM
+nmap <silent> <C-p> <Plug>ToggleProject
+
