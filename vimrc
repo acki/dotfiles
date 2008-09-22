@@ -71,15 +71,15 @@ set showtabline=2                   " always show tab bar
 map <D-2> :syntax off<CR>:syntax on<CR>
     " reload .vimrc
 map <D-3> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
-    " Mac: replace bad ctrl-space spaces with normal spaces
     " Mac+[4-6] : edit various note files
 map <D-4> :tabnew<CR>:e ~/notes/vim/note1.txt<CR>
 map <D-5> :tabnew<CR>:e ~/notes/vim/note2.txt<CR>
 map <D-6> :tabnew<CR>:e ~/notes/vim/note3.txt<CR>
-map <D-7> :nohlsearch<CR>
-    " toggle white-space
-map <D-8> :%s/ / /g<CR>
     " stop highlighting
+map <D-7> :nohlsearch<CR>
+    " Mac: replace bad ctrl-space spaces with normal spaces
+map <D-8> :%s/ / /g<CR>
+    " toggle white-space
 map W :set list!<CR>
     " _ : edit vimrc
 map _ :tabnew<CR>:e ~/.vimrc<CR>
