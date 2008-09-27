@@ -128,3 +128,8 @@ noremap <F1> :call ShowPyDoc('<C-R><C-A>', 1)<CR>
 " PLUGIN: ROJECT.VIM
 nmap <silent> <C-p> <Plug>ToggleProject
 
+
+" ---------------------------
+" PLUGIN: VCSPLUGIN.VIM
+let VCSCommandMapPrefix = 'è'
+
