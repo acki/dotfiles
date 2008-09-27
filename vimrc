@@ -56,6 +56,10 @@ map <silent> <F2> :if &guioptions =~# 'T' <Bar>
                       \set guioptions+=T <Bar>
                       \set guioptions+=m <Bar>
                     \endif<CR>
+" Map F3: Switch to bigger resolution / set new window size
+if has("gui_running")
+    map <silent> <F3> :set lines=66<CR>
+endif
 
 " TABS
 map ä :tabn<CR>
