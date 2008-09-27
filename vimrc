@@ -57,7 +57,6 @@ map <silent> <F2> :if &guioptions =~# 'T' <Bar>
                       \set guioptions+=m <Bar>
                     \endif<CR>
 
-
 " TABS
 map ä :tabn<CR>
 map ü :tabp<CR>
@@ -93,6 +92,7 @@ autocmd BufRead *.kss set filetype=css
 autocmd BufRead *.css.dtml set filetype=css
 autocmd BufRead *.zcml set filetype=xml
 autocmd BufRead *.props set filetype=cfg
+autocmd BufRead *.txt set filetype=doctest
 
 
 "" FILETYPE (EXECUTE)
