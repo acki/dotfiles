@@ -86,7 +86,8 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     alias alpha='ssh root@alpha.cubetech.ch'
     alias dir='ls --color=auto --format=vertical'
     alias vdir='ls --color=auto --format=long'
-    alias gvim='gvim -p --remote-tab'
+    alias gv='gvim'
+    alias gvim='gv -p --remote-tab'
     alias manager='bin/manager/manager.py'
 
     alias grep='grep --color=auto'
