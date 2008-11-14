@@ -16,7 +16,7 @@ set showmatch                       " show closing brackets
 set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.swp
 autocmd BufEnter * lcd %:p:h        " always switch working directory to directory of current file
     "" highlight long lines (>81)
-hi LineTooLong cterm=bold ctermbg=red guibg=darkGrey
+hi LineTooLong cterm=bold ctermbg=red guibg=black
 match LineTooLong /\%>80v.\+/
 
 
@@ -71,8 +71,8 @@ set showtabline=2                   " always show tab bar
 
 " VARIOUS MAPPINGS
 let maplocalleader = ","
-    " toggle syntax
-map <D-2> :syntax off<CR>:syntax on<CR>
+    " disable LineTooLong
+map <D-2> :match LineTooLong //<CR>
     " reload .vimrc
 map <D-3> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
     " Mac+[4-6] : edit various note files
@@ -102,7 +102,8 @@ autocmd BufRead *.txt set filetype=doctest
 "" FILETYPE (EXECUTE)
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
 autocmd FileType php map <F5> :w<CR>:!php "%"<CR>
-autocmd FileType tex map <F5> :w<CR>:!/usr/texbin/pdflatex "%";open *.pdf<CR>
+autocmd FileType tex map <F5> :w<CR>:!/usr/texbin/pdflatex "%";/usr/texbin/pdflatex "%";open %:r.pdf<CR>
+autocmd FileType tex map <F4> :w<CR>:!clearLatexCache<CR>
 
 
 " ---------------------------
