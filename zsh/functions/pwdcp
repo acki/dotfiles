@@ -1,1 +1,1 @@
-echo -n `pwd`/$1 | pbcopy
+echo -n `pwd | sed 's/ /\\ /g'`/$1 | pbcopy
