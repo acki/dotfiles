@@ -21,13 +21,16 @@ alias mysqlstop='mysqladmin5 -u root -p shutdown'
 # hamachi
 alias hamachi='sudo hamachi'
 
-# GIT
-alias git-b='git-branch -a'
-alias git-s='git-status'
-alias git-co='git-checkout'
-alias git-ci='git-commit'
-alias git-mergetool='git-mergetool --tooly=gvimdiff'
-alias git-sd='gvim -p `git-diff --name-only`'
+# git
+alias gl='git pull'
+alias gp='git push'
+alias gd='git diff'
+alias gc='git commit'
+alias gca='git commit -a'
+alias gco='git checkout'
+alias gb='git branch'
+alias gs='git status'
+alias gsm='git submodule init'
 
 rationalise-dot() {
 if [[ $LBUFFER = *.. ]]; then
