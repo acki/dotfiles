@@ -6,6 +6,9 @@ alias la='ls -lA'
 alias grep='grep --color'
 alias Preview='/Applications/Preview.app/Contents/MacOS/Preview'
 
+# emacs
+alias e='/Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs'
+
 # VIM
 alias gvimp='gvim -p'
 alias mvimdiff='mvim -d'
