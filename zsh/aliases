@@ -10,6 +10,7 @@ alias Preview='/Applications/Preview.app/Contents/MacOS/Preview'
 alias gvimp='gvim -p'
 alias mvimdiff='mvim -d'
 alias v='mvim --remote-tab-silent'
+alias d='mvimdiff'
 
 # Apache / mysql
 alias amstart='sudo /opt/local/apache2/bin/apachectl start; sudo /opt/local/bin/mysqld_safe5 &'
