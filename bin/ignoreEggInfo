@@ -32,7 +32,9 @@ if not eggInfoDirectory:
 # write ignore files
 file = open('IGNORE.txt', 'w')
 file.write('# created by: svn propset svn:ignore -F ./IGNORE.TXT .\n\n')
-file.write(eggInfoDirectory)
+file.write('%s\n' % eggInfoDirectory)
+file.write('build\n')
+file.write('dist\n')
 file.close()
 print 'wrote file IGNORE.txt'
 
