@@ -35,6 +35,10 @@ alias gb='git branch'
 alias gs='git status'
 alias gsm='git submodule init'
 
+# subversion
+alias setSvnExternals='svn propset svn:externals -F ./EXTERNALS.TXT .'
+alias setSvnIgnore='svn propset svn:ignore -F ./IGNORE.TXT .'
+
 rationalise-dot() {
 if [[ $LBUFFER = *.. ]]; then
     LBUFFER+=/..
