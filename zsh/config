@@ -42,9 +42,7 @@ zmodload -i zsh/complist
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # named directories
-namedir izug /Users/jone/plone/03_izug_buildout
-namedir skriptorium /Users/jone/plone/02_skriptorium_z2.10.5_p3.0.4
-namedir www /opt/local/apache2/htdocs
-namedir reposit /Users/jone/projects/reposit/svn-trunk/reposit
+namedir izug /Users/jone/projects/izug/
+namedir skriptorium /Users/jone/projects/skriptorium/
 
 bindkey '^?' backward-delete-char echo bindkey '^[[3~' delete-char
