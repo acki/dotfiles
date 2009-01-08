@@ -19,6 +19,17 @@ autocmd BufEnter * lcd %:p:h        " always switch working directory to directo
 hi LineTooLong cterm=bold ctermbg=red guibg=black
 match LineTooLong /\%>80v.\+/
 
+" macvim
+let macvim_skip_cmd_opt_movement = 1
+no   <D-Left>       <Home>
+no!  <D-Left>       <Home>
+no   <D-Right>      <End>
+no!  <D-Right>      <End>
+no   <D-Up>         <C-Home>
+ino  <D-Up>         <C-Home>
+no   <D-Down>       <C-End>
+ino  <D-Down>       <C-End>
+
 
 " INDENTING SETTINGS
 set tabstop=4
@@ -67,6 +78,19 @@ map ü :tabp<CR>
 map $ :q<CR>
 map - :e .<CR>
 set showtabline=2                   " always show tab bar
+
+" SPLITS
+" ... move around
+nmap <A-LEFT> <C-W><LEFT>           " move left
+nmap <A-RIGHT> <C-W><RIGHT>         " move right
+nmap <A-UP> <C-W><UP>               " move up
+nmap <A-DOWN> <C-W><DOWN>           " move down
+" ... resize
+nmap <A-D-LEFT> <C-W><             " decrease width
+nmap <A-D-RIGHT> <C-W>>            " increase width
+nmap <A-D-UP> 2<C-W>-               " decrease height
+nmap <A-D-DOWN> 2<C-W>+             " increase height
+nmap <A-D-CR> 1000<C-W>>1000<C-W>+  " maximize window
 
 
 " VARIOUS MAPPINGS
@@ -133,4 +157,8 @@ nmap <silent> <C-p> <Plug>ToggleProject
 " ---------------------------
 " PLUGIN: VCSPLUGIN.VIM
 let VCSCommandMapPrefix = 'è'
+
+" ---------------------------
+" PLUGIN: GREP.VIM
+nmap gg :Bgrep 
 
