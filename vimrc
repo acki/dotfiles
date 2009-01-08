@@ -80,17 +80,25 @@ map - :e .<CR>
 set showtabline=2                   " always show tab bar
 
 " SPLITS
-" ... move around
+" ... move cursor around
 nmap <A-LEFT> <C-W><LEFT>           " move left
 nmap <A-RIGHT> <C-W><RIGHT>         " move right
 nmap <A-UP> <C-W><UP>               " move up
 nmap <A-DOWN> <C-W><DOWN>           " move down
 " ... resize
-nmap <A-D-LEFT> <C-W><             " decrease width
-nmap <A-D-RIGHT> <C-W>>            " increase width
+nmap <A-D-LEFT> <C-W><              " decrease width
+nmap <A-D-RIGHT> <C-W>>             " increase width
 nmap <A-D-UP> 2<C-W>-               " decrease height
 nmap <A-D-DOWN> 2<C-W>+             " increase height
 nmap <A-D-CR> 1000<C-W>>1000<C-W>+  " maximize window
+" ... move / rotate windows
+nmap <A-D-C-LEFT><LEFT> <C-W>r      " retate windows
+nmap <A-D-C-LEFT><RIGHT> <C-W>R     " reverse rotate windows
+nmap <A-D-C-RIGHT> <C-W>x           " exchange window with next one
+nmap <A-D-C-UP><UP> <C-W>K          " move to top
+nmap <A-D-C-UP><DOWN> <C-W>J        " move to bottom
+nmap <A-D-C-UP><LEFT> <C-W>H        " move to left
+nmap <A-D-C-UP><RIGHT> <C-W>L       " move to right 
 
 
 " VARIOUS MAPPINGS
@@ -132,8 +140,10 @@ autocmd FileType tex map <F4> :w<CR>:!clearLatexCache<CR>
 
 " ---------------------------
 " PLUGIN: BUFEXPLORER.VIM
-map L :split<CR>:BufExplorer<CR>
-map l :BufExplorer<CR>
+map ll :BufExplorer<CR>
+map lh :split<CR>:BufExplorer<CR>
+map lL :split<CR>:BufExplorer<CR>
+map lv :vsplit<CR>:BufExplorer<CR>
 map ö :tabnew<CR>:BufExplorer<CR>
 
 
