@@ -125,6 +125,7 @@ map + :tabnew<CR>:e ~/.vim/vimnotes<CR>
 "" logging & zope
 map lo :!~/.bin/taillog<CR>
 map zr :!~/.bin/restartzope<CR>
+map zo :!~/.bin/stopzope<CR>
 
 
 "" HIGHLIGHTING
