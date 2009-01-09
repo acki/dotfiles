@@ -103,14 +103,14 @@ nmap <A-D-C-UP><RIGHT> <C-W>L       " move to right
 
 " VARIOUS MAPPINGS
 let maplocalleader = ","
-    " disable LineTooLong
-map <D-2> :match LineTooLong //<CR>
+    " notes folder
+map <D-2> :tabnew<CR>:e ~/Documents/notes<CR>:lcd ~/Documents/notes<CR>
     " reload .vimrc
 map <D-3> :source ~/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
     " Mac+[4-6] : edit various note files
-map <D-4> :tabnew<CR>:e ~/notes/vim/note1.txt<CR>
-map <D-5> :tabnew<CR>:e ~/notes/vim/note2.txt<CR>
-map <D-6> :tabnew<CR>:e ~/notes/vim/note3.txt<CR>
+map <D-4> :tabnew<CR>:e ~/Documents/notes/vim/note1.txt<CR>
+map <D-5> :tabnew<CR>:e ~/Documents/notes/vim/note2.txt<CR>
+map <D-6> :tabnew<CR>:e ~/Documents/notes/vim/note3.txt<CR>
     " stop highlighting
 map <D-7> :nohlsearch<CR>
     " Mac: replace bad ctrl-space spaces with normal spaces
@@ -121,6 +121,10 @@ map W :set list!<CR>
 map _ :tabnew<CR>:e ~/.vimrc<CR>
     " + : edit vimnotes
 map + :tabnew<CR>:e ~/.vim/vimnotes<CR>
+
+"" logging & zope
+map lo :!~/.bin/taillog<CR>
+map zr :!~/.bin/restartzope<CR>
 
 
 "" HIGHLIGHTING
@@ -170,5 +174,10 @@ let VCSCommandMapPrefix = 'è'
 
 " ---------------------------
 " PLUGIN: GREP.VIM
+let Grep_Skip_Dirs = '.svn'
+let Grep_Default_Options = '-i'
 nmap gg :Bgrep 
+nmap gG :tabnew<CR>:Bgrep 
+    " grep notes
+nmap gn :exe 'Grep -r ' . input('Pattern:') . ' ~/Documents/notes'<CR>
 
