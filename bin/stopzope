@@ -25,6 +25,5 @@ while not zopeFound:
         path.append('..')
 
 p = os.path.abspath('/'.join(path + ['bin', instances[0]]))
-os.system('%s restart' % p)
-os.system('~/.bin/taillog')
+os.system('%s stop' % p)
 
