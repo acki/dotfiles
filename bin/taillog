@@ -6,6 +6,12 @@ path = ['.']
 
 logFound = False
 
+def showlog(path):
+    if len(sys.argv)>=2 and sys.argv[1]=='open':
+        os.system('mvim --remote-tab-silent %s' % path)
+    else:
+        os.system('tail -f %s' % path)
+
 while not logFound:
     dir = os.listdir('/'.join(path))
     if '/'==os.path.abspath('/'.join(path)):
@@ -30,5 +36,10 @@ if confirm=='y':
         if os.path.isfile(fp):
             os.system('echo "" > %s' % fp)
 
-os.system('tail -f %s/*' % p)
+if 'instance.log' in os.listdir(p):
+    showlog('%s/instance.log' % p)
+elif 'instance1.log' in os.listdir(p):
+    showlog('%s/instance1.log' % p)
+else:
+    showlog('%s/*' % p)
 

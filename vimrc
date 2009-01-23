@@ -53,8 +53,8 @@ set incsearch
 
 " GUI SETTINGS
 if has("gui_running")
-    set columns=170
-    set lines=51
+"    set columns=170
+"    set lines=51
     set guioptions-=T               " disable toolbar
     set guioptions-=M               " disable menu bar
     set guioptions+=c               " use console dialogs
@@ -122,10 +122,12 @@ map _ :tabnew<CR>:e ~/.vimrc<CR>
     " + : edit vimnotes
 map + :tabnew<CR>:e ~/.vim/vimnotes<CR>
 
-"" logging & zope
+"" logging, zope, python
 map lo :!~/.bin/taillog<CR>
+map lp :!~/.bin/taillog open<CR>
 map zr :!~/.bin/restartzope<CR>
 map zo :!~/.bin/stopzope<CR>
+map <A-D-p> <ESC>oimport pdb;pdb.set_trace()
 
 
 "" HIGHLIGHTING
@@ -137,10 +139,11 @@ autocmd BufRead *.txt set filetype=doctest
 
 
 "" FILETYPE (EXECUTE)
-autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
+autocmd FileType python map <F5> :w<CR>:!python2.5 "%"<CR>
 autocmd FileType php map <F5> :w<CR>:!php "%"<CR>
 autocmd FileType tex map <F5> :w<CR>:!/usr/texbin/pdflatex "%";/usr/texbin/pdflatex "%";open %:r.pdf<CR>
 autocmd FileType tex map <F4> :w<CR>:!clearLatexCache<CR>
+au BufNewFile,BufRead *.textile setf textile
 
 
 " ---------------------------
