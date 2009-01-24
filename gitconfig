@@ -1,1 +1,9 @@
-/home/chrigu99/test/dotfiles/gitconfig
+[user]
+	name = christoph.ackermann
+	email = info@acki.be
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[core]
+	excludesfile = /Users/chrigu99/.gitignore
