@@ -1,0 +1,57 @@
+#!/usr/bin/python
+
+import os
+import sys
+
+def error(msg):
+    print 'ERROR:', msg
+    sys.exit(0)
+
+# test, if it is a subversion folder
+if not os.path.isdir('.svn'):
+    error('This directory is not a subversion directory')
+
+# test, if ignore file is existing
+if os.path.isfile('IGNORE.txt'):
+    error('IGNORE.txt is already existing!')
+
+# test, if svn:ignore property is set
+if os.system('svn propget svn:ignore')!=0:
+    error('svn:ignore properties already set!')
+
+# guess egg-info folder name
+dirs = os.listdir('.')
+eggInfoDirectory = None
+for d in dirs:
+    if d.endswith('.egg-info'):
+        eggInfoDirectory = d
+        break
+if not eggInfoDirectory:
+    error('Could not find directory with trailing .egg-info!')
+
+# write ignore files
+file = open('IGNORE.txt', 'w')
+file.write('# created by: svn propset svn:ignore -F ./IGNORE.TXT .\n\n')
+file.write('%s\n' % eggInfoDirectory)
+file.write('build\n')
+file.write('dist\n')
+file.close()
+print 'wrote file IGNORE.txt'
+
+# set properties
+os.system('svn propset svn:ignore -F ./IGNORE.TXT .')
+print 'set svn:ignore property'
+
+# remove folder
+os.system('svn remove --force %s' % eggInfoDirectory)
+print 'set %s do be deleted' % eggInfoDirectory
+
+# add IGNORE.txt
+os.system('svn add IGNORE.txt')
+print 'added IGNORE.txt'
+
+# update working copy
+print 'updating working copy'
+os.system('svn up')
+
+print 'done, run "svn ci"'

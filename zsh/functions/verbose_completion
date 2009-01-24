@@ -1,0 +1,8 @@
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*::::' completer _expand _complete _ignored _approximate
+zstyle ':completion:*:cd:*' tag-order \
+     local-directories directory-stack named-directories path-directories

@@ -1,0 +1,72 @@
+#!/usr/bin/python
+
+import re
+import sys
+import os
+import tempfile
+
+VIM_COMMAND = 'mvim'
+
+class Differ:
+
+    def __init__(self):
+        self.data = sys.stdin.read()
+        self.tempdir = tempfile.gettempdir()
+        self.seperator = '**********************************************************************'
+        self.splitxpr = re.compile('Got|Expected')
+        self.vimBatch = []
+
+        errors = self.data.split(self.seperator)
+        if len(errors)<=1:
+            print self.data
+            return
+        errors.pop(0)
+        summary = errors.pop()
+
+        self.parseErrors(errors)
+
+        summaryFile = self.stringToFile(summary)
+        self.vimBatch.append(':tabnew')
+        self.vimBatch.append(':e %s' % summaryFile)
+        # start diff
+        vimFile = self.stringToFile('\n'.join(self.vimBatch)+'\n')
+        self.runcmd('%s -s %s' % (VIM_COMMAND, vimFile))
+
+    def parseErrors(self, errors):
+        for err in errors:
+            meta, expected, got = self.splitxpr.split(err)
+            self.diff(meta, expected, got)
+
+    def diff(self, metadata, dataA, dataB):
+        if len(self.vimBatch)>0:
+            self.vimBatch.append(':tabnew')
+        metaFile = self.stringToFile(metadata)
+        aFile = self.stringToFile(dataA)
+        bFile = self.stringToFile(dataB)
+        self.vimBatch.append(':e %s' % metaFile)
+        self.vimBatch.append(':split')
+        self.vimBatch.append(':e %s' % aFile)
+        self.vimBatch.append(':vertical diffsplit %s' % bFile)
+
+    def stringToFile(self, data):
+        if '_fileId' not in dir(self):
+            self._fileId = 0
+        self._fileId += 1
+        path = '%s/.diffDoctest_%i' % (self.tempdir, self._fileId)
+        f = open(path, 'w')
+        f.write(data)
+        f.close()
+        return path
+
+    def runcmd(self, cmd, background=False):
+        if background:
+            ThreadedCommand(cmd).start()
+            return 'started in background...'
+        p = os.popen(cmd, 'r')
+        l = p.readlines()
+        p.close()
+        return l
+
+if __name__=='__main__':
+    Differ()
+
