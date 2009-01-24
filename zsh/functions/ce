@@ -1,0 +1,2 @@
+# used for cd-ing a python egg
+cd $1/`echo $1 | sed -e 's/\./\//g'`

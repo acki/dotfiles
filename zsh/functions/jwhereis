@@ -1,0 +1,15 @@
+python -c "
+import os
+path='$PATH'.split(':')
+needle='$1'
+
+red = lambda s,n:s.replace(n, '\033[0;31m%s\033[00m' % str(n))
+
+for dir in path:
+    dir = os.path.expanduser(dir)
+    if os.path.exists(dir):
+        for file in os.listdir(dir):
+            if needle in file:
+                print red(' : '.join((dir, file)), needle)
+
+"

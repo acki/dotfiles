@@ -1,0 +1,96 @@
+#!/bin/zsh
+
+alias ls='ls -Gh'
+alias ll='ls -l'
+alias la='ls -lA'
+alias l='la'
+alias grep='grep --color'
+alias Preview='/Applications/Preview.app/Contents/MacOS/Preview'
+
+# emacs
+alias e='/Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs'
+
+# VIM
+alias gvimp='gvim -p'
+alias mvimdiff='mvim -d'
+alias v='mvim --remote-tab-silent'
+alias d='mvimdiff'
+
+# Apache / mysql
+alias amstart='sudo /opt/local/apache2/bin/apachectl start; sudo /opt/local/bin/mysqld_safe5 &'
+alias apache2ctl='sudo /opt/local/apache2/bin/apachectl'
+alias mysqlstart='sudo mysqld_safe5 &'
+alias mysqlstop='mysqladmin5 -u root -p shutdown'
+
+# hamachi
+alias hamachi='sudo hamachi'
+
+# git
+alias gl='git pull'
+alias gp='git push'
+alias gd='git diff'
+alias gc='git commit'
+alias gca='git commit -a'
+alias gco='git checkout'
+alias gb='git branch'
+alias gs='git status'
+alias gsm='git submodule init'
+
+# subversion
+alias setSvnExternals='svn propset svn:externals -F ./EXTERNALS.TXT .'
+alias setSvnIgnore='svn propset svn:ignore -F ./IGNORE.TXT .'
+
+rationalise-dot() {
+if [[ $LBUFFER = *.. ]]; then
+    LBUFFER+=/..
+else
+    LBUFFER+=.
+fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot
+
+alias ..='cd ..'
+alias ...='cd ../..'
+
+
+# Mac Application aliases
+alias firefox='open -a firefox'
+alias preview='open -a Preview'
+alias camino='open -a Camino'
+alias mail='open -a Mail'
+alias skype='open -a Skype'
+alias adium='open -a Adium'
+alias ical='open -a ICal'
+alias finder='open -a Finder'
+alias notes='open -a Stickies'
+alias tasks='open -a TaskCoach'
+# http://github.com/Caged/gitnub/tree/master
+alias nub='open -a gitnub'
+
+# django stuff
+alias manager='bin/manager/manager.py'
+
+#Extensions
+alias -s pdf=preview
+alias -s odt=preview
+alias -s doc=preview
+alias -s docx=preview
+alias -s rtf=preview
+alias -s ods=preview
+alias -s xls=preview
+alias -s xlsx=preview
+alias -s odp=preview
+alias -s ppt=preview
+alias -s pptx=preview
+
+alias -s htm=firefox
+alias -s html=firefox
+alias -s xml=firefox
+
+alias -s png=preview
+alias -s jpg=preview
+alias -s gif=preview
+
+alias -s php=php
+alias -s py=python

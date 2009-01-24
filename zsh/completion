@@ -1,0 +1,34 @@
+autoload -Uz compinit
+compinit
+
+# matches case insensitive for lowercase
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# pasting with tabs doesn't perform completion
+zstyle ':completion:*' insert-tab pending
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=1
+zstyle ':completion:*' select-prompt '%SScrolling active: current selection at %p%s'
+zstyle :compinstall filename '/Users/senny/.zshrc'
+
+# End of lines added by compinstall
+
+# Group matches and Describe
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:descriptions' format $'\e[01;33m -- %d --\e[0m'
+zstyle ':completion:*:messages' format $'\e[01;35m -- %d --\e[0m'
+zstyle ':completion:*:warnings' format $'\e[01;31m -- No Matches Found --\e[0m'
+
+# Remove uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+    adm alias apache at bin cron cyrus daemon ftp games gdm guest \
+    haldaemon halt mail man messagebus mysql named news nobody nut \
+    lp operator portage postfix postgres postmaster qmaild qmaill \
+    qmailp qmailq qmailr qmails shutdown smmsp squid sshd sync \
+    uucp vpopmail xfs \
+    `cat /etc/passwd | grep ^_ | cut -d ':' -f 1`

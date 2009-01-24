@@ -1,0 +1,619 @@
+#!/usr/bin/python
+
+import sys
+import os, os.path
+import getopt
+import re
+from threading import Thread
+
+EXTENDED_STATUS_COMMAND = 'svn st | grep -v ^X | grep -v ^Performing | grep -v ^$ | grep -v PKG-INFO$ | grep -v SOURCES.txt$ | grep -v .egg-info$'
+VIM_COMMAND = 'mvim'
+
+class Main:
+
+    con = None
+    svn = None
+
+
+    def __init__(self):
+        self.con = JConsole(self)
+        self.svn = Svn(self)
+        self.register_commands()
+        if 'help' in ''.join(sys.argv).lower():
+            self.cmd_help([],[])
+        else:
+            self.cmd_status([], [])
+        self.con.startPrompt()
+
+
+    def register_commands(self):
+        self.con.register_command(
+            cmd = ['status', 'st'],
+            method = self.cmd_status,
+            desc = 'shows the difference of the working compared to the base revision (like \'svn status\')',
+        )
+        self.con.register_command(
+            cmd = ['extended', 'est'],
+            method = self.cmd_ext_status,
+            desc = EXTENDED_STATUS_COMMAND,
+        )
+        self.con.register_command(
+            cmd = ['add', 'a'],
+            method = self.cmd_add,
+            desc = 'runs \'svn add\' for one or more files',
+        )
+        self.con.register_command(
+            cmd = ['revert', 'r'],
+            method = self.cmd_revert,
+            desc = 'runs \'svn revert\' for one or more files',
+        )
+        self.con.register_command(
+            cmd = ['delete', 'del', 'rm'],
+            method = self.cmd_delete,
+            desc = 'runs \'svn --force delete\' for one or more files',
+        )
+        self.con.register_command(
+            cmd = ['diff', 'd'],
+            method = self.cmd_diff,
+            desc = 'shows the difference between a working-copy file and its base-revision with Vim',
+        )
+        self.con.register_command(
+            cmd = ['info', 'i'],
+            method = self.cmd_info,
+            desc = 'runs \'svn info\' on the working directory',
+        )
+        self.con.register_command(
+            cmd = ['commit', 'ci', 'c'],
+            method = self.cmd_ci,
+            desc = 'runs \'svn commit\' on the working directory',
+        )
+        self.con.register_command(
+            cmd = ['edit', 'e'],
+            method = self.cmd_edit,
+            desc = 'edits a file'
+        )
+        self.con.register_command(
+            cmd = ['blame', 'b'],
+            method = self.cmd_blame,
+            desc = 'blames a file'
+        )
+        self.con.register_command(
+            cmd = ['versions', 'v'],
+            method = self.cmd_versions,
+            desc = 'show all revisions of a file',
+        )
+        self.con.register_command(
+            cmd = ['lock', 'l'],
+            method = self.cmd_lock,
+            desc = 'lock modified file LOCALLY!',
+        )
+        self.con.register_command(
+            cmd = ['unlock', 'u'],
+            method = self.cmd_unlock,
+            desc = 'unlock file LOCALLY!',
+        )
+        self.con.register_command(
+            cmd = ['exit', 'quit', 'bye', 'q'],
+            method = self.cmd_exit,
+            desc = 'Exits..',
+        )
+        self.con.register_command(
+            cmd = ['help', 'h'],
+            method = self.cmd_help,
+            desc = 'Shows this help text..',
+        )
+
+
+    def cmd_status(self, options, args):
+        if len(args) > 0:
+            self.svn.status(args[0])
+        else:
+            self.svn.status()
+
+    def cmd_ext_status(self, options, args):
+        print ''.join(self.svn.runcmd(EXTENDED_STATUS_COMMAND))
+
+
+    def cmd_add(self, options, args):
+        files = self.con.selectFiles('?', 'add')
+        if files!=False:
+            for foo, foo2, file in files:
+                print ''.join(self.svn.add(file)).strip()
+
+
+    def cmd_revert(self, options, args):
+        files = self.con.selectFiles('MAD!', 'revert', ommit_local_locks=True)
+        if files!=False:
+            for foo, foo2, file in files:
+                print ''.join(self.svn.revert(file)).strip()
+
+
+    def cmd_delete(self, options, args):
+        files = self.con.selectFiles(None, 'delete', ommit_local_locks=True)
+        if files!=False:
+            if len(files):
+                print ''
+                print 'Are you really shure to delete the selected files?'
+                input = self.con.prompt('delete > Confirm with \'yes\'')
+                if input=='yes':
+                    for foo, foo2, file in files:
+                        self.svn.delete(file)
+                        print 'removed ', file
+            else:
+                print ''
+                print 'No files to delete...'
+
+
+    def cmd_diff(self, options, args):
+        files = self.con.selectFiles('M', 'diff', confirm=False)
+        if files!=False and len(files)>0:
+            self.svn.diff([file for foo, foo2, file in files])
+
+
+    def cmd_info(self, options, args):
+        print ''.join(self.svn.info()).strip()
+
+
+    def cmd_ci(self, options, args):
+        ciFiles = None
+        input = self.con.prompt('commit > Commit all changes? [Y/n]:')
+        input = input.lower().strip()
+        if input=='n':
+            ciFiles = self.con.selectFiles('ADMRCIKSKOTB', 'commit', ommit_local_locks=True)
+            if ciFiles==False:
+                return
+        elif input=='y' or len(input)==0:
+            ciFiles = self.svn.status('ADMRCIKSKOTB', filterTitles=True, ommit_local_locks=True, quiet=True)
+        elif input=='q':
+            return
+        else:
+            print 'What the fuck? Just answer with "y" for yes and "n" for no! ;)'
+            return self.cmd_ci(options, args)
+        if len(ciFiles)==0:
+            print 'ERROR: no files selected'
+            return
+        print ''
+        print 'Please enter your comment and finally hit [RETURN] two times:'
+        stop = False
+        text = ''
+        while not stop:
+            input = self.con.prompt('commit > enter comment')
+            input = input.strip()
+            if len(input)==0:
+                stop = True
+            else:
+                text += input + '\n'
+        print ''.join(self.svn.commit(text, files=ciFiles))
+    
+    def cmd_edit(self, options, args):
+        selectedFiles = self.con.selectFiles(None, 'edit', confirm=False, ommit_local_locks=True)
+        if selectedFiles:
+            files = [file for foo, foo2, file in selectedFiles if os.path.isfile(file)]
+            self.svn.runcmd('%s -p %s ' % (VIM_COMMAND, ' '.join(files)), background=True)
+
+    def cmd_blame(self, **kwargs):
+        files = [file for foo, foo2, file in self.con.selectFiles('ADMRCXIKSKOTB', 'blame', confirm=False) if os.path.isfile(file)]
+        self.svn.blame(files)
+
+    def cmd_versions(self, **kwargs):
+        files = self.con.selectFiles('M', 'versions', confirm=False, multiple=False)
+        if files:
+            self.svn.versions(files[0][2])
+
+    def cmd_lock(self, options, args):
+        files = self.con.selectFiles('M', 'local lock', confirm=False)
+        if files!=False and len(files)>0:
+            self.svn.lock([file for foo, foo2, file in files])
+
+    def cmd_unlock(self, options, args):
+        files = self.con.selectFiles('M', 'local unlock', confirm=False)
+        if files!=False and len(files)>0:
+            self.svn.unlock([file for foo, foo2, file in files])
+
+    def cmd_exit(self, options, args):
+        print 'bye ...'
+        sys.exit()
+
+
+    def cmd_help(self, options, args):
+        commands = self.con.get_commands()
+        help = []
+        lmax = 0
+        for command in commands:
+            cmds = ', '.join(command.get_commands())
+            desc = command.get_description()
+            help.append((cmds, desc))
+            if lmax < len(cmds):
+                lmax = len(cmds)
+        lmax += 1
+        for cmds, desc in help:
+            print cmds, ''.join([' ' for x in range(len(cmds),lmax)]), desc
+
+
+    def test(self):
+        print test
+
+
+
+
+
+class Svn:
+    
+    main = None
+
+    def __init__(self, main):
+        self.main = main
+
+    
+    def status(self, flags=None, filterTitles=False, ommit_local_locks=False, quiet=False):
+        return self.print_files(flags, filterTitles, ommit_local_locks=ommit_local_locks, quiet=quiet)
+
+
+    def add(self, file):
+        return self.runcmd('svn add ' + file)
+
+
+    def delete(self, file):
+        return self.runcmd('svn --force delete ' + file)
+
+
+    def revert(self, file):
+        return self.runcmd('svn revert ' + file)
+
+
+    def diff(self, files):
+        tempdir = '/tmp'
+        tempfiles = []
+        vimcommands = []
+        counter = 0
+        for file in files:
+            filename = file.split('/')[-1]
+            basename = 'BASE.%s' % filename
+            filename = '%s/%s.%s' % (tempdir, str(counter), filename)
+            basename = '%s/jsvn.%s.%s' % (tempdir, str(counter), basename)
+            tempfiles.append(filename)
+            tempfiles.append(basename)
+            self.runcmd('ln -s %s %s' % (os.getcwd() + '/' + file, filename))
+            self.runcmd('svn cat -r BASE %s > %s' % (file, basename))
+            vimcommands.append(':e %s\n:vertical diffsplit %s\n' % (basename, filename))
+            counter += 1
+        vimcommands.insert(0, ':e .jsvn.vimcommands')
+        vimcmd = ':tabnew\n'.join(vimcommands)
+        file = open(tempdir + '/.jsvn.vimcommands', 'w')
+        file.write(vimcmd)
+        file.close()
+        tempfiles.append('%s/.jsvn.vimcommands' % tempdir)
+        self.runcmd('%s -s %s/.jsvn.vimcommands' % (VIM_COMMAND, tempdir))
+        for file in tempfiles:
+            self.runcmd('rm %s' % file)
+
+    def versions(self, file):
+        tmpdir = '/tmp'
+        tempfiles = []
+        vimcommands = []
+        log = self.runcmd('svn log %s' % file)
+        log = ''.join(log).strip().split('------------------------------------------------------------------------')[1:-1]
+        print 'exporting revisions:'
+        for revisionlog in log:
+            rev = revisionlog.strip().split(' ')[0]
+            print ' - exporting %s' % rev
+            tmpfile = '%s/%s.%s' % (tmpdir, rev, file)
+            self.runcmd('svn cat -r %s %s > %s' % (rev[1:], file, tmpfile))
+            tempfiles.append(tmpfile)
+            tmplogfile = '%s.log' % tmpfile
+            logfile = open(tmplogfile, 'w')
+            logfile.write(revisionlog)
+            logfile.close()
+            tempfiles.append(tmplogfile)
+            vimcommands.append(':e %s\n:split %s\n' % (tmplogfile, tmpfile))
+        vimcommands = ':tabnew\n'.join(vimcommands)
+        vimfile = open(tmpdir + '/.jsvn.vimcommands', 'w')
+        vimfile.write(vimcommands)
+        vimfile.close()
+        tempfiles.append(tmpdir + '/.jsvn.vimcommands')
+        self.runcmd('%s -s %s/.jsvn.vimcommands' % (VIM_COMMAND, tmpdir))
+        for file in tempfiles:
+            self.runcmd('rm %s' % file)
+
+    def blame(self, files):
+        tmpdir = '/tmp'
+        self.runcmd('rm %s/.jsvn.blame.*' % tmpdir)
+        for file in files:
+            print 'blaming %s' % file
+            self.runcmd('svn blame %s > %s/.jsvn.blame.%s' % (file, tmpdir, file))
+        self.runcmd('%s %s/.jsvn.blame.*' % (VIM_COMMAND, tmpdir))
+
+
+    def info(self):
+        return self.runcmd('svn info')
+
+
+    def commit(self, comment, files=None):
+        comment = comment.strip()
+        comment = comment.replace('\'', '"')
+        if files==None:
+            return ['ERROR: No files selected ...']
+            #return self.runcmd('svn ci -m \'%s\'' % comment)
+        elif len(files)>0:
+            cmdFiles = ' '.join([x[2] for x in files])
+            return self.runcmd('svn ci -m \'%s\' %s' % (comment, cmdFiles))
+        else:
+            return ['No files selected ...']
+
+    def lock(self, files):
+        print ''
+        for file in files:
+            if os.path.isfile(file):
+                self.perform_lock(file)
+            else:
+                print 'ERROR: not a file: %s' % file
+
+    def unlock(self, files):
+        print ''
+        for file in files:
+            if os.path.isfile(file):
+                self.perform_unlock(file)
+            else:
+                print 'ERROR: not a file: %s' % file
+
+    def getLockfile(self, file):
+        if os.path.isfile(file):
+            dirname = os.path.dirname(file)
+            if len(dirname)>0:
+                dirname = '%s/' % dirname
+            lockfile = '%s.svn/jsvn.lock' % dirname
+            return lockfile
+        else:
+            return None
+
+    def isLocked(self, file):
+        if not os.path.isfile(file):
+            return False
+        lockfile = self.getLockfile(file)
+        if not os.path.exists(lockfile):
+            return False
+        elif os.path.basename(file) in open(lockfile).read().strip().split('\n'):
+            return True
+        else:
+            return False
+
+    def perform_lock(self, file):
+        if self.isLocked(file):
+            print 'WARNING: file is already locked: %s' % file
+            return
+        lockfile = self.getLockfile(file)
+        locks = []
+        if os.path.exists(lockfile):
+            locks = open(lockfile).read().strip().split('\n')
+        locks.append(os.path.basename(file))
+        lf = open(lockfile, 'w+')
+        lf.write('\n'.join(locks))
+        lf.close()
+        print 'locked: %s' % file
+
+    def perform_unlock(self, file):
+        if not self.isLocked(file):
+            print 'WARNING: file was not locked: %s' % file
+            return
+        lockfile = self.getLockfile(file)
+        locks = []
+        if os.path.exists(lockfile):
+            locks = open(lockfile).read().strip().split('\n')
+        locks.remove(os.path.basename(file))
+        lf = open(lockfile, 'w+')
+        lf.write('\n'.join(locks))
+        lf.close()
+        print 'unlocked: %s' % file
+
+
+    def print_files(self, flags, filterTitles=False, ommit_local_locks=False, quiet=False):
+        if flags!=None:
+            newflags = ''
+            for f in flags.upper():
+                if f in 'ADMRCXI?!~L+SKOTB*':
+                    newflags += f
+            flags = newflags
+        files = self.get_files(filterTitles)
+        backfiles = []
+        for f in files:
+            id, flag, file = f
+            if flags==None or flag in flags:
+                if ommit_local_locks and self.isLocked(file):
+                    continue
+                backfiles.append(f)
+                if self.isLocked(file):
+                    flag += ' L'
+                if not quiet:
+                    print id, ''.join([' ' for x in range(len(str(id)), 5)]), flag, ''.join([' ' for x in range(len(flag), 5)]), file
+        return backfiles
+
+    def get_files(self, filterTitles=False):
+        st = []
+        for line in self.runcmd('svn st'):
+            if len(line.strip())>0:
+                st.append(line)
+        files = []
+        index = 1
+        for flag, file in [(x[0], ' '.join(x[1:])) for x in [x.strip().split() for x in st]]:
+            p = re.compile('[a-z]{1,}')
+            if not p.match(flag, 1):
+                files.append([
+                    index,
+                    flag,
+                    file
+                ])
+                index += 1
+            elif not filterTitles:
+                files.append([
+                    flag + file,
+                    '',
+                    ''
+                ])
+        return files
+
+
+    def runcmd(self, cmd, background=False):
+        if background:
+            ThreadedCommand(cmd).start()
+            return 'started in background...'
+        p = os.popen(cmd, 'r')
+        l = p.readlines()
+        p.close()
+        return l
+
+
+class ThreadedCommand(Thread):
+    
+    command = ''
+
+    def __init__(self, command):
+        Thread.__init__(self)
+        self.command = command
+
+    def run(self):
+        os.popen(self.command, 'r').close()
+
+
+
+
+
+
+class JConsole:
+
+    run = True
+    main = None
+    commands = []
+    command_catalog = {}
+    
+    def __init__(self, main):
+        self.main = main
+
+
+    def register_command(self, cmd, method, options=[], desc=''):
+        command = Cmd(cmd, method, options, desc)
+        self.commands.append(command)
+        for c in cmd:
+            self.command_catalog[c] = command
+
+
+    def startPrompt(self):
+        while self.run:
+            input = self.prompt('')
+            self.parseCommand(input)
+
+
+    def parseCommand(self, command):
+        if len(command)==0:
+            return
+        command = command.split()
+        cmd = command[0]
+        args = command[1:]
+        if cmd in self.command_catalog.keys():
+            print ''
+            self.command_catalog[cmd].callMethod(args)
+            print ''
+        else:
+            print 'command not found: ', cmd
+
+
+    def get_commands(self):
+        return self.commands
+
+
+    def prompt(self, prompt):
+        prompt = prompt.strip()
+        if len(prompt)>0:
+            prompt = 'jsvn > ' + prompt + ' > '
+        else:
+            prompt = 'jsvn > '
+        return raw_input(prompt)
+
+    
+    def selectFiles(self, flags, prompt, multiple=True, confirm=True, ommit_local_locks=False):
+        selected_files = []
+        if multiple:
+            print ' select one or more files:'
+            print '\t*\tfor selecting all files'
+        else:
+            print 'select a file:'
+        print '\t[index]\tfor selecting a single file'
+        print '\tENTER\tfor finish selection / quit '
+        print '\tq\tquit / cancel'
+        print ''
+        files = {}
+        for f in self.main.svn.status(flags, filterTitles=True, ommit_local_locks=ommit_local_locks):
+            index, flag, file = f
+            files[index] = f
+        if len(files)==0:
+            print 'no files to select',
+            print 'cancel...'
+            return False
+        stop = False
+        while not stop:
+            input = self.prompt(prompt)
+            if len(input)==0:
+                stop = True
+            elif input=='q':
+                return False
+            elif multiple and input=='*':
+                selected_files = files.values()
+                print ' added all files..'
+                stop = True
+            else:
+                try:
+                    if int(input) in files.keys():
+                        print ' added file ', input, ' (', files[int(input)][2], ')'
+                        selected_files.append(files[int(input)])
+                    else:
+                        print ' selection failed'
+                except:
+                    print ' selection failed'
+            if not multiple and len(selected_files)>0:
+                stop = True
+        print ''
+        print 'selected files:'
+        for id, flag, file in selected_files:
+            if self.main.svn.isLocked(file):
+                flag += ' L'
+            print id, ''.join([' ' for x in range(len(str(id)), 5)]), flag, ''.join([' ' for x in range(len(flag), 5)]), file
+        if confirm:
+            input = self.prompt('continue? [Y/n]').lower()
+        else:
+            input = 'y'
+        if len(input)==0 or input=='y':
+            return selected_files
+        else:
+            print 'cancel ...'
+            return False
+
+
+
+
+class Cmd:
+    commands = []
+    method = None
+    options = []
+    description = ''
+
+    def __init__(self, cmd, method, options=[], desc=''):
+        self.commands = cmd
+        self.method = method
+        self.options = options
+        self.description = desc
+
+
+    def callMethod(self, commandLine):
+        (options, args) = getopt.getopt(commandLine, self.options)
+        self.method(options=options, args=args)
+
+
+    def get_commands(self):
+        return self.commands
+
+
+    def get_description(self):
+        return self.description
+
+
+if __name__=='__main__':
+    Main()

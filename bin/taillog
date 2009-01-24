@@ -1,0 +1,45 @@
+#!/usr/bin/python
+
+import os, sys
+
+path = ['.']
+
+logFound = False
+
+def showlog(path):
+    if len(sys.argv)>=2 and sys.argv[1]=='open':
+        os.system('mvim --remote-tab-silent %s' % path)
+    else:
+        os.system('tail -f %s' % path)
+
+while not logFound:
+    dir = os.listdir('/'.join(path))
+    if '/'==os.path.abspath('/'.join(path)):
+        print 'ERROR: File system root reached: no "log" folder found ..'
+        print 'Press any key ...'
+        raw_input()
+        sys.exit(0)
+    elif 'log' in dir:
+        logFound = True
+    elif 'var' in dir and (len(path)<2 or path[-2]!='var'):
+        path.append('var')
+    else:
+        path.append('..')
+
+# cleanup?
+p = os.path.abspath('/'.join(path + ['log']))
+print 'found log folder:', p
+confirm = raw_input('do you want to clean up all logs [y/N]?').strip()
+if confirm=='y':
+    for f in os.listdir(p):
+        fp = p + '/' + f
+        if os.path.isfile(fp):
+            os.system('echo "" > %s' % fp)
+
+if 'instance.log' in os.listdir(p):
+    showlog('%s/instance.log' % p)
+elif 'instance1.log' in os.listdir(p):
+    showlog('%s/instance1.log' % p)
+else:
+    showlog('%s/*' % p)
+
