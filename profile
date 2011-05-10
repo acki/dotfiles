@@ -1,7 +1,8 @@
 #
 # Your previous .profile  (if any) is saved as .profile.mpsaved
 # Setting the path for MacPorts.
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=/Users/chrigu99/Plone/bin:/Applications/XAMPP/xamppfiles/bin:/usr/local/python/2.6.4-i386/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PYTHONSTARTUP=~/.pythonstartup
 export VISUAL=vi
 export PS1='\033[01;32m\]\u\033[00m\]:\033[0;33m\]`echo \$prompt`\033[00m\]:\w\033[0;33m\]\$ \033[00m\]'
 
