@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+alias ssh='ssh -A'
+alias espresso='open -a Espresso .'
+
 # 4tw
 
 alias psi='ssh -A zope@psi.4teamwork.ch'
